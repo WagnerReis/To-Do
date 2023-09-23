@@ -5,7 +5,6 @@ export function Toolbar() {
   return (
     <main className={styles.container}>
         <input type="text" className={styles.filter} />
-        <button className={styles.addCollumn}>Add Column</button>
-    </main>
+      </main>
   )
 }

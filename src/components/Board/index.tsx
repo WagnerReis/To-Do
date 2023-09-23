@@ -35,23 +35,6 @@ const columns = [
   },
 ]
 
-// const cards: CardProps[] = [
-//   {
-//     id: "1",
-//     title: "fazer algo",
-//     status: "new",
-//     estimate: 2,
-//     date: new Date("01/01/2023"),
-//   },
-//   {
-//     id: "2",
-//     title: "fazer outra coisa",
-//     status: "doing",
-//     estimate: 2,
-//     date: new Date("01/01/2023"),
-//   },
-// ]
-
 export function Board() {
   const [cards, setCards] = useState<CardProps[]>([
     {
@@ -63,7 +46,7 @@ export function Board() {
     },
     {
       id: "2",
-      title: "fazer outra coisa",
+      title: "fazer outra coisa fazer outra coisa fazer outra coisa fazer outra coisa ",
       status: "doing",
       estimate: 2,
       date: new Date("01/01/2023"),
@@ -83,6 +66,10 @@ export function Board() {
   return (
     <>
       <DndProvider backend={HTML5Backend}>
+      <section className={styles.container}>
+        <input type="text" className={styles.filter} />
+      </section>
+
         <main className={styles.board}>
           {columns.map((column) => (
             <Column

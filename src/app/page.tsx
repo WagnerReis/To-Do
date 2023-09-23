@@ -7,7 +7,7 @@ export default function Home() {
   return (
     <>
       <Header />
-      <Toolbar />
+      {/* <Toolbar /> */}
       <Board />
     </>
   )
