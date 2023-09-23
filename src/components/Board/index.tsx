@@ -6,7 +6,7 @@ import { CardProps } from "../Card"
 import { DndProvider } from "react-dnd"
 import { HTML5Backend } from "react-dnd-html5-backend"
 
-const colors = ["#B10E5C", "#0047FF", "#0AB061", "#33A1FF"]
+const colors = ["#B10E5C", "#0047FF", "#0AB061", "#E9B824"]
 
 const columns = [
   {
