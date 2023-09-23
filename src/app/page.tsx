@@ -1,7 +1,7 @@
-// import styles from "./page.module.scss";
-import { Header } from "../components/Header";
-import { Toolbar } from "../components/Toolbar";
-import { Board } from "../components/Board";
+'use client'
+import { Header } from "../components/Header"
+import { Toolbar } from "../components/Toolbar"
+import { Board } from "../components/Board"
 
 export default function Home() {
   return (
@@ -10,5 +10,5 @@ export default function Home() {
       <Toolbar />
       <Board />
     </>
-  );
+  )
 }
