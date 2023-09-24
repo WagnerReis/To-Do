@@ -29,13 +29,13 @@ export function Column({
   });
   
   const [modalIsOpen, setModalIsOpen] = useState(false);
-  const [myCards, setMyCards] = useState<CardProps[]>(cards);
-  const [newTitle, setNewTitle] = useState("");
-  const [newDescription, setNewDescription] = useState("");
-  const [newEstimate, setNewEstimate] = useState("");
-  const [newDueDate, setNewDueDate] = useState("");
+  // const [myCards, setMyCards] = useState<CardProps[]>(cards);
+  // const [newTitle, setNewTitle] = useState("");
+  // const [newDescription, setNewDescription] = useState("");
+  // const [newEstimate, setNewEstimate] = useState("");
+  // const [newDueDate, setNewDueDate] = useState("");
   
-  const filteredCards = myCards.filter((card) => card.status === status);
+  const filteredCards = cards.filter((card) => card.status === status);
 
   const openModal = () => {
     setModalIsOpen(true);
@@ -45,44 +45,44 @@ export function Column({
     setModalIsOpen(false);
   };
 
-  const handleTitle = (event: React.ChangeEvent<HTMLInputElement>) => {
-    setNewTitle(event.target.value);
-  };
+  // const handleTitle = (event: React.ChangeEvent<HTMLInputElement>) => {
+  //   setNewTitle(event.target.value);
+  // };
 
-  const handleDescription = (event: React.ChangeEvent<HTMLTextAreaElement>) => {
-    setNewDescription(event.target.value);
-  };
+  // const handleDescription = (event: React.ChangeEvent<HTMLTextAreaElement>) => {
+  //   setNewDescription(event.target.value);
+  // };
 
-  const handleEstimate = (event: React.ChangeEvent<HTMLInputElement>) => {
-    setNewEstimate(event.target.value);
-  };
+  // const handleEstimate = (event: React.ChangeEvent<HTMLInputElement>) => {
+  //   setNewEstimate(event.target.value);
+  // };
 
-  const handleDueDate = (event: React.ChangeEvent<HTMLInputElement>) => {
-    setNewDueDate(event.target.value);
-  };
+  // const handleDueDate = (event: React.ChangeEvent<HTMLInputElement>) => {
+  //   setNewDueDate(event.target.value);
+  // };
 
-  const createCard = (event: any) => {
-    event.preventDefault();
+  // const createCard = (event: any) => {
+  //   event.preventDefault();
 
-    const newCard: CardProps = {
-      id: '12344',
-      title: newTitle,
-      // description: newDescription,
-      estimate: +newEstimate,
-      date: new Date(newDueDate),
-      status
-    }
+  //   const newCard: CardProps = {
+  //     id: '12344',
+  //     title: newTitle,
+  //     // description: newDescription,
+  //     estimate: +newEstimate,
+  //     date: new Date(newDueDate),
+  //     status
+  //   }
 
-    const newCards = [
-      ...myCards,
-      newCard
-    ]
+  //   const newCards = [
+  //     ...myCards,
+  //     newCard
+  //   ]
 
-    console.log(newCard)
+  //   console.log(newCard)
 
-    setMyCards(newCards)
-    closeModal()
-  };
+  //   setMyCards(newCards)
+  //   closeModal()
+  // };
 
   return (
     <main className={styles.container} ref={ref}>
@@ -113,7 +113,7 @@ export function Column({
                 type="text"
                 id="title"
                 name="title"
-                onChange={handleTitle}
+                // onChange={handleTitle}
                 required
               />
             </div>
@@ -127,7 +127,7 @@ export function Column({
                     className={styles.textarea}
                     id="description"
                     name="description"
-                    onChange={handleDescription}
+                    // onChange={handleDescription}
                     required
                   ></textarea>
                 </div>
@@ -142,7 +142,7 @@ export function Column({
                       type="number"
                       id="estimate"
                       name="estimate"
-                      onChange={handleEstimate}
+                      // onChange={handleEstimate}
                       required
                     />
                   </div>
@@ -155,7 +155,7 @@ export function Column({
                       type="date"
                       id="due-date"
                       name="due-date"
-                      onChange={handleDueDate}
+                      // onChange={handleDueDate}
                       required
                     />
                   </div>
@@ -167,7 +167,7 @@ export function Column({
                     <label className={styles.label} html-for="comments">Comments:</label>
                     <textarea id="comments" name="comments" rows={2}></textarea>
                 </div> */}
-            <button className={styles.button} onClick={createCard} type="submit">
+            <button className={styles.button} /*onClick={createCard}*/ type="submit">
               Create task
             </button>
           </form>
