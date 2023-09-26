@@ -4,30 +4,31 @@ import styles from "./styles.module.scss";
 import { useDrag } from "react-dnd";
 
 export interface CardProps {
-  id: string;
+  _id: string;
   title: string;
   status: string;
+  code: string;
   estimate: number;
-  date: Date;
+  dueDate: Date;
 }
 
-export function Card({ id, title, status, estimate, date }: CardProps) {
-  const [data, setData] = useState(date.toLocaleDateString());
-  const [newEstimate, setEstimate] = useState(String(estimate));
-  const [newTitle, setTitle] = useState(title);
+export function Card({ _id, title, status, code, estimate, dueDate }: CardProps) {
+  const [newDueDate, setDueDate] = useState(dueDate);
+  const [newEstimate, setEstimate] = useState(estimate);
   const [selectedOption, setSelectedOption] = useState(status)
 
   const [, ref] = useDrag({
     type: "CARD",
-    item: { id, targetColumn: status },
+    item: { id: _id, targetColumn: status },
   });
 
-  const handleDataChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    setData(event.target.value);
+  const handleDataChange = (event: React.ChangeEvent<HTMLDataElement>) => {
+    setDueDate(new Date(event.target.value));
+    console.log(newDueDate)
   };
 
   const handleEstimateChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    setEstimate(event.target.value);
+    setEstimate(Number(event.target.value));
   };
 
   const handleSelectedOptionChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
@@ -36,7 +37,7 @@ export function Card({ id, title, status, estimate, date }: CardProps) {
 
   return (
     <main className={styles.container} ref={ref}>
-      <div className={styles.title}>123456: {newTitle}</div>
+      <div className={styles.title}>{code}: {title}</div>
       <div className={styles.statusEstimate}>
         <select className={styles.select} name="status" value={selectedOption} onChange={handleSelectedOptionChange}>
           <option className={styles.option} value={status}>
@@ -57,7 +58,7 @@ export function Card({ id, title, status, estimate, date }: CardProps) {
             type="text"
             pattern="[0-9]*"
             name="effort"
-            value={newEstimate}
+            value={newEstimate || ''}
             onChange={handleEstimateChange}
           />
         </div>
@@ -67,8 +68,7 @@ export function Card({ id, title, status, estimate, date }: CardProps) {
         <input
           className={styles.date}
           type="date"
-          value={data}
-          name="estimate"
+          name="dueDate"
           onChange={handleDataChange}
         />
       </div>

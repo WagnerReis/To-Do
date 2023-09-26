@@ -27,14 +27,14 @@ export function Column({
       onCardDrop(item.id, status);
     },
   });
-  
+
   const [modalIsOpen, setModalIsOpen] = useState(false);
   // const [myCards, setMyCards] = useState<CardProps[]>(cards);
   // const [newTitle, setNewTitle] = useState("");
   // const [newDescription, setNewDescription] = useState("");
   // const [newEstimate, setNewEstimate] = useState("");
   // const [newDueDate, setNewDueDate] = useState("");
-  
+
   const filteredCards = cards.filter((card) => card.status === status);
 
   const openModal = () => {
@@ -77,8 +77,6 @@ export function Column({
   //     ...myCards,
   //     newCard
   //   ]
-
-  //   console.log(newCard)
 
   //   setMyCards(newCards)
   //   closeModal()
@@ -167,7 +165,10 @@ export function Column({
                     <label className={styles.label} html-for="comments">Comments:</label>
                     <textarea id="comments" name="comments" rows={2}></textarea>
                 </div> */}
-            <button className={styles.button} /*onClick={createCard}*/ type="submit">
+            <button
+              className={styles.button}
+              /*onClick={createCard}*/ type="submit"
+            >
               Create task
             </button>
           </form>
@@ -176,12 +177,13 @@ export function Column({
 
       {filteredCards.map((card) => (
         <Card
-          key={card.id}
-          id={card.id}
+          key={card._id}
+          _id={card._id}
           title={card.title}
           status={card.status}
+          code={card.code}
           estimate={card.estimate}
-          date={card.date}
+          dueDate={card.dueDate}
         />
       ))}
     </main>

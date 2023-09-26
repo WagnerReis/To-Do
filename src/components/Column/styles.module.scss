@@ -2,7 +2,7 @@
   min-width: calc((100% / 4) - 1.5rem);
   max-width:  calc((100% / 4) - 1.5rem);
   min-height: 100%;
-  background: rgba(255, 255, 255, 0.4);
+  background: var(--secondary);
   border-radius: 6px;
   padding: 1rem 0;
   box-sizing: border-box;
@@ -16,11 +16,12 @@
     width: 6rem;
     height: 2rem;
     color: #000000;
-    background: rgba(255, 255, 255);
+    background: var(--secondary);
     margin-top: -2rem;
     margin-left: -3rem;
     border-radius: 6px;
     font-weight: 600;
+    border: 1px solid #ccc;
 
     display: flex;
     justify-content: center;
@@ -131,7 +132,7 @@
 }
 
 .button {
-  background-color: #007BFF;
+  background-color: var(--blue);
   color: #fff;
   width: 100%;
   border: none;
@@ -143,6 +144,6 @@
   transition: .3s;
 
   &:hover {
-    background-color: #0056b3;
+    opacity: .8;
   }
 }

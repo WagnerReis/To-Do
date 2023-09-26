@@ -1,5 +1,8 @@
 :root {
   font-family: Verdana, Geneva, Tahoma, sans-serif;
+  --primary: #F8F8F8;
+  --secondary: #FFFFFF;
+  --blue: #007BFF;
 }
 
 @media (prefers-color-scheme: dark) {
@@ -23,7 +26,7 @@ body {
 
 body {
   color: rgb(var(--foreground-rgb));
-  background:  linear-gradient(45deg, #daa8ff 30%, #76ccff);
+  background:  var(--primary);
 }
 
 a {

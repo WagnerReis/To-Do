@@ -18,7 +18,7 @@ export function TaskModal({ isOpen, onClose, children }: any) {
         },
         content: {
           width: "900px",
-          height: "63 0px",
+          height: "630px",
           margin: "auto",
           borderRadius: "8px",
           padding: "20px",
