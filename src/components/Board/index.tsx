@@ -1,4 +1,4 @@
-'use client'
+"use client";
 import React, { useEffect, useState } from "react";
 import styles from "./styles.module.scss";
 import { Column } from "../Column";
@@ -6,20 +6,24 @@ import { CardProps } from "../Card";
 import { DndProvider } from "react-dnd";
 import { HTML5Backend } from "react-dnd-html5-backend";
 import { getColumns } from "@/utils/getColumns";
-import Cookies from "js-cookie";
-import axios from "axios";
+import { TaskModal } from "../TaskModal";
+import { api, getConfig } from "@/api";
 
 const columns = getColumns();
 
 export function Board() {
-  const token = Cookies.get("user_token"); 
-  const config = {
-    headers: {
-      Authorization: `Bearer ${token}`, 
-    },
-  };
+  const config = getConfig()
 
   const [cards, setCards] = useState<CardProps[]>([]);
+  const [modalIsOpen, setModalIsOpen] = useState(false);
+
+  const openModal = () => {
+    setModalIsOpen(true);
+  };
+
+  const closeModal = () => {
+    setModalIsOpen(false);
+  };
 
   const handleCardDrop = async (cardId: string, targetColumn: string) => {
     const cardIndex = cards.findIndex((c) => c._id === cardId);
@@ -27,11 +31,11 @@ export function Board() {
       const updatedCard = { ...cards[cardIndex], status: targetColumn };
       const updatedCards = [...cards];
       updatedCards[cardIndex] = updatedCard;
-      
-      setCards(updatedCards)
-      await axios.patch(
-        `http://localhost:3000/cards/updateStatus/${updatedCards[cardIndex]._id}`,
-        {status: targetColumn},
+
+      setCards(updatedCards);
+      await api.patch(
+        `/cards/updateStatus/${updatedCards[cardIndex]._id}`,
+        { status: targetColumn },
         config
       );
     }
@@ -39,11 +43,11 @@ export function Board() {
 
   useEffect(() => {
     (async () => {
-      const obj = await axios.get<CardProps[]>(
-        "http://localhost:3000/cards",
+      const obj = await api.get<CardProps[]>(
+        "/cards",
         config
       );
-      
+
       setCards(obj.data);
     })();
   }, []);
@@ -52,8 +56,13 @@ export function Board() {
     <>
       <DndProvider backend={HTML5Backend}>
         <section className={styles.container}>
+          <div onClick={openModal} className={styles.plus}>+</div>
           <input type="text" className={styles.filter} />
         </section>
+
+        <TaskModal isOpen={modalIsOpen} onClose={closeModal}>
+        
+        </TaskModal>
 
         <main className={styles.board}>
           {columns.map((column) => (

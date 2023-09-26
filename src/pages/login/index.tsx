@@ -2,12 +2,12 @@ import React, { ChangeEvent, useState } from "react";
 import styles from "./styles.module.scss";
 import "../../app/globals.scss";
 import Image from "next/image";
-import axios from "axios";
 import Link from "next/link";
 import { useRouter } from "next/router";
 import Cookies from "js-cookie";
 
 import logo from "../../../public/assets/icon.png";
+import { api } from "@/api";
 
 interface IResponse {
   data: {
@@ -36,8 +36,8 @@ export default function Login() {
     };
 
     try {
-      const { data }: IResponse = await axios.post(
-        "http://localhost:3000/auth/login",
+      const { data }: IResponse = await api.post(
+        "/auth/login",
         payload
       );
 
@@ -54,7 +54,7 @@ export default function Login() {
   return (
     <main className={styles.container}>
       <div className={styles.main}>
-        <Image className={styles.logo} src={logo} alt="logo" />
+        <Image className={styles.logo} src={logo} alt="logo" priority={false} quality={100} />
 
         <input
           className={styles.email}

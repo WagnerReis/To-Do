@@ -9,7 +9,29 @@
 
   display: flex;
   align-items: center;
-  justify-content: flex-end;
+  justify-content: space-between;
+
+  .plus{
+    width: 1.8rem;
+    height: 1.8rem;
+    line-height: 100%;
+    background: var(--blue);
+    color: #FFF;
+    font-size: 1.3rem;
+    border-radius: 6px;
+    font-weight: 500;
+    border: 1px solid rgba(255, 255, 255, .8);
+    cursor: pointer;
+  
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: .2s;
+  
+    &:hover{
+      border: 1px solid rgba(0, 0, 0, .1);
+    }
+  }
 
   .filter {
     width: 500px;
