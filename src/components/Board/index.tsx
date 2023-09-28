@@ -1,4 +1,4 @@
-"use client";
+// "use client";
 import React, { useEffect, useState } from "react";
 import styles from "./styles.module.scss";
 import { Column } from "../Column";
@@ -8,11 +8,23 @@ import { HTML5Backend } from "react-dnd-html5-backend";
 import { getColumns } from "@/utils/getColumns";
 import { TaskModal } from "../TaskModal";
 import { api, getConfig } from "@/api";
+import { useRouter } from "next/navigation";
 
 const columns = getColumns();
 
 export function Board() {
   const config = getConfig()
+
+  useEffect(() => {
+    (async () => {
+      const obj = await api.get<CardProps[]>(
+        "/cards",
+        config
+      );
+
+      setCards(obj.data);
+    })();    
+  }, []);
 
   const [cards, setCards] = useState<CardProps[]>([]);
   const [modalIsOpen, setModalIsOpen] = useState(false);
@@ -40,17 +52,6 @@ export function Board() {
       );
     }
   };
-
-  useEffect(() => {
-    (async () => {
-      const obj = await api.get<CardProps[]>(
-        "/cards",
-        config
-      );
-
-      setCards(obj.data);
-    })();
-  }, []);
 
   return (
     <>
