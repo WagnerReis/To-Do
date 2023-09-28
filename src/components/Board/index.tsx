@@ -1,5 +1,4 @@
-// "use client";
-import React, { useEffect, useState } from "react";
+import React, { ChangeEvent, useEffect, useState } from "react";
 import styles from "./styles.module.scss";
 import { Column } from "../Column";
 import { CardProps } from "../Card";
@@ -8,7 +7,7 @@ import { HTML5Backend } from "react-dnd-html5-backend";
 import { getColumns } from "@/utils/getColumns";
 import { TaskModal } from "../TaskModal";
 import { api, getConfig } from "@/api";
-import { useRouter } from "next/navigation";
+import { debounce } from "lodash";
 
 const columns = getColumns();
 
@@ -37,6 +36,18 @@ export function Board() {
     setModalIsOpen(false);
   };
 
+  const debouncedSearch = debounce((searchTerm: string) => {
+    api.get<CardProps[]>(`/cards?title=${searchTerm}`, config)
+      .then((response) => {
+        setCards(response.data)
+      });
+  }, 1000);
+
+  const handleFilter = (event: ChangeEvent<HTMLInputElement>) => {
+    const searchTerm = event.target.value;
+    debouncedSearch(searchTerm);
+  }
+
   const handleCardDrop = async (cardId: string, targetColumn: string) => {
     const cardIndex = cards.findIndex((c) => c._id === cardId);
     if (cardIndex !== -1) {
@@ -58,7 +69,7 @@ export function Board() {
       <DndProvider backend={HTML5Backend}>
         <section className={styles.container}>
           <div onClick={openModal} className={styles.plus}>+</div>
-          <input type="text" className={styles.filter} />
+          <input type="text" className={styles.filter} onChange={handleFilter} />
         </section>
 
         <TaskModal isOpen={modalIsOpen} onClose={closeModal}>
