@@ -7,11 +7,18 @@ import { useRouter } from "next/router";
 import Cookies from "js-cookie";
 
 import logo from "../../../public/assets/icon.png";
-import { api } from "@/api";
+import { api, getConfig } from "@/api";
 
 interface IResponse {
   data: {
     access_token: string;
+  };
+}
+
+interface IResponseProfile {
+  data: {
+    email: string;
+    sub: string;
   };
 }
 
@@ -36,10 +43,7 @@ export default function Login() {
     };
 
     try {
-      const { data }: IResponse = await api.post(
-        "/auth/login",
-        payload
-      );
+      const { data }: IResponse = await api.post("/auth/login", payload);
 
       setErrorLogin(false);
 
@@ -54,7 +58,13 @@ export default function Login() {
   return (
     <main className={styles.container}>
       <div className={styles.main}>
-        <Image className={styles.logo} src={logo} alt="logo" priority={false} quality={100} />
+        <Image
+          className={styles.logo}
+          src={logo}
+          alt="logo"
+          priority={true}
+          quality={100}
+        />
 
         <input
           className={styles.email}

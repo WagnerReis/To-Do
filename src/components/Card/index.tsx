@@ -24,7 +24,6 @@ export function Card({ _id, title, status, code, estimate, dueDate }: CardProps)
 
   const handleDataChange = (event: React.ChangeEvent<HTMLDataElement>) => {
     setDueDate(new Date(event.target.value));
-    console.log(newDueDate)
   };
 
   const handleEstimateChange = (event: React.ChangeEvent<HTMLInputElement>) => {
