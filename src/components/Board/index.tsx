@@ -12,17 +12,14 @@ import { debounce } from "lodash";
 const columns = getColumns();
 
 export function Board() {
-  const config = getConfig()
+  const config = getConfig();
 
   useEffect(() => {
     (async () => {
-      const obj = await api.get<CardProps[]>(
-        "/cards",
-        config
-      );
+      const obj = await api.get<CardProps[]>("/cards", config);
 
       setCards(obj.data);
-    })();    
+    })();
   }, []);
 
   const [cards, setCards] = useState<CardProps[]>([]);
@@ -37,16 +34,17 @@ export function Board() {
   };
 
   const debouncedSearch = debounce((searchTerm: string) => {
-    api.get<CardProps[]>(`/cards?title=${searchTerm}`, config)
+    api
+      .get<CardProps[]>(`/cards?title=${searchTerm}`, config)
       .then((response) => {
-        setCards(response.data)
+        setCards(response.data);
       });
   }, 1000);
 
   const handleFilter = (event: ChangeEvent<HTMLInputElement>) => {
     const searchTerm = event.target.value;
     debouncedSearch(searchTerm);
-  }
+  };
 
   const handleCardDrop = async (cardId: string, targetColumn: string) => {
     const cardIndex = cards.findIndex((c) => c._id === cardId);
@@ -65,30 +63,33 @@ export function Board() {
   };
 
   return (
-    <>
-      <DndProvider backend={HTML5Backend}>
-        <section className={styles.container}>
-          <div onClick={openModal} className={styles.plus}>+</div>
-          <input type="text" className={styles.filter} onChange={handleFilter} />
-        </section>
+    <DndProvider backend={HTML5Backend}>
+      <section className={styles.container}>
+        <div onClick={openModal} className={styles.plus}>
+          +
+        </div>
+        <input type="text" className={styles.filter} onChange={handleFilter} />
+      </section>
 
-        <TaskModal isOpen={modalIsOpen} onClose={closeModal}>
-        
-        </TaskModal>
+      <TaskModal 
+        isOpen={modalIsOpen}
+        onClose={closeModal}
+        cards={cards}
+        setCards={setCards}
+      />
 
-        <main className={styles.board}>
-          {columns.map((column) => (
-            <Column
-              key={column.id}
-              status={column.status}
-              title={column.title}
-              color={column.color}
-              cards={cards}
-              onCardDrop={handleCardDrop}
-            />
-          ))}
-        </main>
-      </DndProvider>
-    </>
+      <main className={styles.board}>
+        {columns.map((column) => (
+          <Column
+            key={column.id}
+            status={column.status}
+            title={column.title}
+            color={column.color}
+            cards={cards}
+            onCardDrop={handleCardDrop}
+          />
+        ))}
+      </main>
+    </DndProvider>
   );
 }

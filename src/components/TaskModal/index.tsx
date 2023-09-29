@@ -2,8 +2,34 @@ import React from "react";
 import { IoMdClose } from "react-icons/io";
 import Modal from "react-modal";
 import styles from './styles.module.scss'
+import { useForm, SubmitHandler } from "react-hook-form"
+import { api, getConfig } from "@/api";
 
-export function TaskModal({ isOpen, onClose }: any) {
+type Inputs = {
+  title: string;
+  description?: string;
+  estimate?: number;
+  dueDate?: string;
+  status: string;
+}
+
+export function TaskModal({ isOpen, onClose, cards, setCards }: any) {
+  const {
+    register,
+    handleSubmit,
+    reset,
+    formState: { errors },
+  } = useForm<Inputs>()
+  const onSubmit: SubmitHandler<Inputs> = (data) => {
+    data.status = "new"
+    api.post('/cards', data, getConfig())
+      .then(response => {
+        setCards([...cards, response.data])
+        onClose()
+        reset()
+      })
+  }  
+
   return (
     <Modal
       isOpen={isOpen}
@@ -23,14 +49,14 @@ export function TaskModal({ isOpen, onClose }: any) {
     >
       <div className={styles.modalContent}>
           <header className={styles.headerTask}>
-            <h2>Create new Task</h2>
+            <h2>Create Task</h2>
             <IoMdClose
               size={24}
               className={styles.close}
               onClick={onClose}
             />
           </header>
-          <form>
+          <form onSubmit={handleSubmit(onSubmit)}>
             <div className={styles.formGroup}>
               <label className={styles.label} html-for="title">
                 Title:
@@ -39,10 +65,9 @@ export function TaskModal({ isOpen, onClose }: any) {
                 className={styles.inputText}
                 type="text"
                 id="title"
-                name="title"
-                // onChange={handleTitle}
-                required
+                {...register("title", { required: true })}
               />
+              {errors.title && <span>This field is required</span>}
             </div>
             <div>
               <div className={styles.formGroupTwo}>
@@ -53,9 +78,7 @@ export function TaskModal({ isOpen, onClose }: any) {
                   <textarea
                     className={styles.textarea}
                     id="description"
-                    name="description"
-                    // onChange={handleDescription}
-                    required
+                    {...register("description")}
                   ></textarea>
                 </div>
 
@@ -68,10 +91,8 @@ export function TaskModal({ isOpen, onClose }: any) {
                       className={styles.inputNumber}
                       type="number"
                       id="estimate"
-                      name="estimate"
-                      // onChange={handleEstimate}
-                      required
-                    />
+                      {...register("estimate", { min: 0, max: 99 })}
+                      />
                   </div>
                   <div className={styles.formGroup}>
                     <label className={styles.label} html-for="due-date">
@@ -81,25 +102,17 @@ export function TaskModal({ isOpen, onClose }: any) {
                       className={styles.inputDate}
                       type="date"
                       id="due-date"
-                      name="due-date"
-                      // onChange={handleDueDate}
-                      required
+                      {...register("dueDate")}
                     />
                   </div>
                 </div>
               </div>
             </div>
-
-            {/* <div className={styles.formGroup}>
-                    <label className={styles.label} html-for="comments">Comments:</label>
-                    <textarea id="comments" name="comments" rows={2}></textarea>
-                </div> */}
-            <button
+            <input
               className={styles.button}
-              /*onClick={createCard}*/ type="submit"
-            >
-              Create task
-            </button>
+              type="submit"
+              defaultValue="Create"
+            />
           </form>
         </div>
     </Modal>
