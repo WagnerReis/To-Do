@@ -1,64 +1,77 @@
-"use client";
 import React, { useState } from "react";
 import styles from "./styles.module.scss";
 import { useDrag } from "react-dnd";
+import { formatedDueDate } from "@/utils/formatedDueDate";
+import { api, getConfig } from "@/api";
 
 export interface CardProps {
   _id: string;
   title: string;
   status: string;
   code: string;
-  estimate: number;
+  estimated: number;
   dueDate: Date;
 }
 
-export function Card({ _id, title, status, code, estimate, dueDate }: CardProps) {
-  const [newDueDate, setDueDate] = useState(dueDate);
-  const [newEstimate, setEstimate] = useState(estimate);
-  const [selectedOption, setSelectedOption] = useState(status)
+export function Card({
+  _id,
+  title,
+  status,
+  code,
+  estimated,
+  dueDate,
+}: CardProps) {
+  const [newDueDate, setDueDate] = useState(formatedDueDate(dueDate));
+  const [newEstimate, setEstimate] = useState(estimated);
+  const [selectedOption, setSelectedOption] = useState(status);
 
   const [, ref] = useDrag({
     type: "CARD",
     item: { id: _id, targetColumn: status },
   });
 
-  const handleDataChange = (event: React.ChangeEvent<HTMLDataElement>) => {
-    setDueDate(new Date(event.target.value));
-  };
+  const handleFieldChange = (
+    event: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>,
+    field: string
+  ) => {
+    const { id, value } = event.target;
 
-  const handleEstimateChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    setEstimate(Number(event.target.value));
-  };
+    if (field === "dueDate") {
+      setDueDate(value);
+    } else if (field === "estimated") {
+      setEstimate(Number(value));
+    } else if (field === "status") {
+      setSelectedOption(value);
+    }
 
-  const handleSelectedOptionChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
-    setSelectedOption(event.target.value);
-  }
+    const dataToUpdate = { [field]: value };
+    api.patch(`/cards/update${field}/${id}`, dataToUpdate, getConfig());
+  };
 
   return (
-    <main className={styles.container} ref={ref}>
-      <div className={styles.title}>{code}: {title}</div>
+    <main ref={ref} className={styles.container}>
+      <div className={styles.title}>
+        {code}: {title}
+      </div>
       <div className={styles.statusEstimate}>
-        <select className={styles.select} name="status" value={selectedOption} onChange={handleSelectedOptionChange}>
-          <option className={styles.option} value={status}>
-            new
-          </option>
-          <option className={styles.option} value="doing">
-            doing
-          </option>
-          <option className={styles.option} value="done">
-            done
-          </option>
+        <select
+          className={styles.select}
+          name="status"
+          id={_id}
+          value={selectedOption}
+          onChange={(e) => handleFieldChange(e, "status")}
+        >
+          {createOptions(styles.option)}
         </select>
-
         <div className={styles.effort}>
           <label htmlFor="effort">Estimate:</label>
           <input
             className={styles.estimate}
             type="text"
-            pattern="[0-9]*"
             name="effort"
-            value={newEstimate || ''}
-            onChange={handleEstimateChange}
+            id={_id}
+            value={newEstimate}
+            onChange={(e) => handleFieldChange(e, "estimated")}
           />
         </div>
       </div>
@@ -67,10 +80,21 @@ export function Card({ _id, title, status, code, estimate, dueDate }: CardProps)
         <input
           className={styles.date}
           type="date"
+          id={_id}
           name="dueDate"
-          onChange={handleDataChange}
+          value={newDueDate}
+          onChange={(e) => handleFieldChange(e, "dueDate")}
         />
       </div>
     </main>
   );
+}
+
+function createOptions(styles: string) {
+  const status: string[] = ["new", "doing", "validation", "done"];
+  return status.map((st) => (
+    <option key={st} className={styles} value={st}>
+      {st}
+    </option>
+  ));
 }

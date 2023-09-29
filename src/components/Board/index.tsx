@@ -17,7 +17,6 @@ export function Board() {
   useEffect(() => {
     (async () => {
       const obj = await api.get<CardProps[]>("/cards", config);
-
       setCards(obj.data);
     })();
   }, []);
@@ -71,7 +70,7 @@ export function Board() {
         <input type="text" className={styles.filter} onChange={handleFilter} />
       </section>
 
-      <TaskModal 
+      <TaskModal
         isOpen={modalIsOpen}
         onClose={closeModal}
         cards={cards}

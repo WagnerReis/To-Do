@@ -41,7 +41,7 @@ export function Column({
           title={card.title}
           status={card.status}
           code={card.code}
-          estimate={card.estimate}
+          estimated={card.estimated}
           dueDate={card.dueDate}
         />
       ))}

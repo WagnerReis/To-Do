@@ -11,13 +11,14 @@ export default function Home() {
   const { isLoading, data } = useQuery({
     queryKey: ["auth"],
     queryFn: async () => {
-      return api
-        .get("/auth/profile", getConfig())
-        .then((response) => response)
-        .catch(() => {
-          router.push("/login");
-          throw new Error("Usuário não autenticado");
-        });
+      try {
+        const response = await api
+          .get("/auth/profile", getConfig());
+        return response;
+      } catch {
+        router.push("/login");
+        throw new Error("Usuário não autenticado");
+      }
     },
   });
 
@@ -29,8 +30,7 @@ export default function Home() {
 
   if (isLoading) {
     return (
-      <>
-        <div
+        <main
           style={{
             display: "flex",
             justifyContent: "center",
@@ -41,8 +41,7 @@ export default function Home() {
           <div className="spinner-border text-primary" role="status">
             <span className="sr-only">Carregando...</span>
           </div>
-        </div>
-      </>
+        </main>
     );
   }
 

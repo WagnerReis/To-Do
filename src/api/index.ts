@@ -15,12 +15,3 @@ export const getConfig = () => {
 
   return config;
 };
-
-export const getUser = async () => {
-  return api
-    .get("/auth/profile", getConfig())
-    .then((response) => response)
-    .catch((error) => {
-      console.log(error);
-    });
-};
