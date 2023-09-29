@@ -8,7 +8,7 @@ import { api, getConfig } from "@/api";
 type Inputs = {
   title: string;
   description?: string;
-  estimate?: number;
+  estimated?: number;
   dueDate?: string;
   status: string;
 }
@@ -82,16 +82,16 @@ export function TaskModal({ isOpen, onClose, cards, setCards }: any) {
                   ></textarea>
                 </div>
 
-                <div className={styles.estimate}>
+                <div className={styles.estimated}>
                   <div className={styles.formGroupThree}>
-                    <label className={styles.label} html-for="estimate">
+                    <label className={styles.label} html-for="estimated">
                       Estimate:
                     </label>
                     <input
                       className={styles.inputNumber}
                       type="number"
-                      id="estimate"
-                      {...register("estimate", { min: 0, max: 99 })}
+                      id="estimated"
+                      {...register("estimated", { min: 0, max: 99 })}
                       />
                   </div>
                   <div className={styles.formGroup}>
@@ -111,7 +111,7 @@ export function TaskModal({ isOpen, onClose, cards, setCards }: any) {
             <input
               className={styles.button}
               type="submit"
-              defaultValue="Create"
+              value="Create"
             />
           </form>
         </div>
