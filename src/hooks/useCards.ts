@@ -4,7 +4,7 @@ import { useContext } from "react";
 
 interface UseCardsPorps {
   cards: CardProps[];
-  // completeCard: (id: CardProps["_id"], value: CardProps) => void,
+  updateCompleteCard: (id: CardProps["_id"], value: CardProps) => void,
   updateStatus: (id: CardProps["_id"], status: CardProps["status"]) => void;
   updateEstimate: (
     id: CardProps["_id"],

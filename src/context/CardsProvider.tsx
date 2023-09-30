@@ -4,7 +4,7 @@ import React, { ReactNode, createContext, useMemo, useState } from "react";
 
 interface UseCardsPorps {
   cards: CardProps[],
-  // completeCard: (id: CardProps["_id"], value: CardProps) => void,
+  updateCompleteCard: (id: CardProps["_id"], value: CardProps) => void,
   updateStatus: (id: CardProps["_id"], status: CardProps["status"]) => void,
   updateEstimate: (id: CardProps["_id"], status: CardProps["estimated"]) => void,
   updateDueDate: (id: CardProps["_id"], status: CardProps["dueDate"]) => void,
@@ -13,7 +13,7 @@ interface UseCardsPorps {
 
 const initialContextValue: UseCardsPorps = {
   cards: [],
-  // completeCard: (id, value) => {},
+  updateCompleteCard: (id, value) => {},
   updateStatus: (id, status) => {},
   updateEstimate: (id, estimated) => {},
   updateDueDate: (id, dueDate) => {},
@@ -33,7 +33,11 @@ export function CardsProvider({ children }: CardsProviderProps ) {
     setCards(updatedCards);
   };
 
-  // const completeCard = (cardId: CardProps["_id"]) => {};
+  const updateCompleteCard = async (cardId: CardProps["_id"], value: CardProps) => {
+    await api.patch(`/cards/${cardId}`, value, getConfig());
+    const response = await api.get<CardProps[]>('/cards', getConfig())
+    setCards(response.data)
+  };
 
   const updateStatus = async (
     cardId: CardProps["_id"],
@@ -72,7 +76,7 @@ export function CardsProvider({ children }: CardsProviderProps ) {
   const contextValue = useMemo(() => {
     return {
       cards,
-      // completeCard,
+      updateCompleteCard,
       updateStatus,
       updateEstimate,
       updateDueDate,
