@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import styles from "./styles.module.scss";
 import { useDrag } from "react-dnd";
 import { formatedDueDate } from "@/utils/formatedDueDate";
-import { useCards } from "../Board";
+import { useCards } from "@/hooks/useCards";
 
 export interface CardProps {
   _id: string;
@@ -11,6 +11,10 @@ export interface CardProps {
   code: string;
   estimated: number;
   dueDate: Date;
+}
+
+interface ICard {
+  _id: string;
 }
 
 const cardDefault = {
@@ -22,7 +26,7 @@ const cardDefault = {
   dueDate: new Date(),
 }
 
-export function Card({ _id }: CardProps) {
+export function Card({ _id }: ICard) {
   const { cards, updateDueDate, updateEstimate, updateStatus } = useCards();
   const card: CardProps = cards.find((c: CardProps) => c._id === _id) || cardDefault
 

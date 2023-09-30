@@ -1,11 +1,4 @@
-import React, {
-  ChangeEvent,
-  createContext,
-  useContext,
-  useEffect,
-  useMemo,
-  useState,
-} from "react";
+import React, { ChangeEvent, useEffect, useState } from "react";
 import styles from "./styles.module.scss";
 import { Column } from "../Column";
 import { CardProps } from "../Card";
@@ -15,54 +8,20 @@ import { getColumns } from "@/utils/getColumns";
 import { TaskModal } from "../TaskModal";
 import { api, getConfig } from "@/api";
 import { debounce } from "lodash";
+import { useCards } from "@/hooks/useCards";
 
 const columns = getColumns();
-
-interface UseCardsPorps {
-  cards: CardProps[],
-  // completeCard: (id: CardProps["_id"], value: CardProps) => void,
-  updateStatus: (id: CardProps["_id"], status: CardProps["status"]) => void,
-  updateEstimate: (id: CardProps["_id"], status: CardProps["estimated"]) => void,
-  updateDueDate: (id: CardProps["_id"], status: CardProps["dueDate"]) => void,
-}
-
-const initialContextValue: UseCardsPorps = {
-  cards: [],
-  // completeCard: (id, value) => {},
-  updateStatus: (id, status) => {},
-  updateEstimate: (id, estimated) => {},
-  updateDueDate: (id, dueDate) => {},
-};
-
-const CardsContext = createContext<UseCardsPorps>(initialContextValue);
 
 export function Board() {
   const config = getConfig();
 
-  const [cards, setCards] = useState<CardProps[]>([]);
+  const { cards, updateCards } = useCards();
   const [modalIsOpen, setModalIsOpen] = useState(false);
-
-  // const completeCard = (cardId: CardProps["_id"]) => {};
-
-  const updateStatus = async (cardId: CardProps["_id"], newStatus: CardProps["status"]) => {
-    const dataToUpdate = { status: newStatus };
-    await api.patch(`/cards/updateStatus/${cardId}`, dataToUpdate, getConfig());
-  };
-
-  const updateEstimate = async (cardId: CardProps["_id"], newEstimate: CardProps["estimated"]) => {
-    const dataToUpdate = { estimated: newEstimate };
-    await api.patch(`/cards/updateEstimated/${cardId}`, dataToUpdate, getConfig());
-  };
-
-  const updateDueDate = async (cardId: CardProps["_id"], newDueDate: CardProps["dueDate"]) => {
-    const dataToUpdate = { dueDate: newDueDate };
-    await api.patch(`/cards/updateDueDate/${cardId}`, dataToUpdate, getConfig());
-  };
 
   const fetchCards = async () => {
     try {
-      const obj = await api.get<CardProps[]>("/cards", config);
-      setCards(obj.data);
+      const response = await api.get<CardProps[]>("/cards", config);
+      updateCards(response.data);
     } catch (error) {
       console.error("Erro ao buscar cartões:", error);
     }
@@ -74,8 +33,8 @@ export function Board() {
 
   useEffect(() => {
     (async () => {
-      const obj = await api.get<CardProps[]>("/cards", config);
-      setCards(obj.data);
+      const response = await api.get<CardProps[]>("/cards", config);
+      updateCards(response.data);
     })();
   }, []);
 
@@ -91,7 +50,7 @@ export function Board() {
     api
       .get<CardProps[]>(`/cards?title=${searchTerm}`, config)
       .then((response) => {
-        setCards(response.data);
+        updateCards(response.data);
       });
   }, 1000);
 
@@ -107,7 +66,7 @@ export function Board() {
       const updatedCards = [...cards];
       updatedCards[cardIndex] = updatedCard;
 
-      setCards(updatedCards);
+      updateCards(updatedCards);
       await api.patch(
         `/cards/updateStatus/${updatedCards[cardIndex]._id}`,
         { status: targetColumn },
@@ -116,36 +75,27 @@ export function Board() {
     }
   };
 
-  const contextValue = useMemo(() => {
-    return {
-      cards,
-      // completeCard,
-      updateStatus,
-      updateEstimate,
-      updateDueDate,
-    };
-  }, [cards]);
-
   return (
     <DndProvider backend={HTML5Backend}>
-      <section className={styles.container}>
-        <div onClick={openModal} className={styles.plus}>
-          +
-        </div>
-        <input type="text" className={styles.filter} onChange={handleFilter} />
-      </section>
+        <section className={styles.container}>
+          <div onClick={openModal} className={styles.plus}>
+            +
+          </div>
+          <input
+            type="text"
+            className={styles.filter}
+            onChange={handleFilter}
+          />
+        </section>
 
-      <TaskModal
-        isOpen={modalIsOpen}
-        onClose={closeModal}
-        cards={cards}
-        setCards={setCards}
-      />
+        <TaskModal
+          isOpen={modalIsOpen}
+          onClose={closeModal}
+          cards={cards}
+          setCards={updateCards}
+        />
 
-      <main className={styles.board}>
-        <CardsContext.Provider
-          value={contextValue}
-        >
+        <main className={styles.board}>
           {columns.map((column) => (
             <Column
               key={column.id}
@@ -156,20 +106,7 @@ export function Board() {
               onCardDrop={handleCardDrop}
             />
           ))}
-        </CardsContext.Provider>
-      </main>
+        </main>
     </DndProvider>
   );
-}
-
-interface UseCardsPorps {
-  cards: CardProps[],
-  // completeCard: (id: CardProps["_id"], value: CardProps) => void,
-  updateStatus: (id: CardProps["_id"], status: CardProps["status"]) => void,
-  updateEstimate: (id: CardProps["_id"], status: CardProps["estimated"]) => void,
-  updateDueDate: (id: CardProps["_id"], status: CardProps["dueDate"]) => void,
-}
-
-export function useCards(): UseCardsPorps {
-  return useContext<UseCardsPorps>(CardsContext);
 }

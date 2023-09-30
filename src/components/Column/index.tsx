@@ -3,7 +3,7 @@ import React from "react";
 import styles from "./styles.module.scss";
 import { Card } from "../Card";
 import { useDrop } from "react-dnd";
-import { useCards } from "../Board";
+import { useCards } from "@/hooks/useCards";
 
 interface ColumnProps {
   title: string;
@@ -12,12 +12,7 @@ interface ColumnProps {
   onCardDrop: any;
 }
 
-export function Column({
-  title,
-  status,
-  color,
-  onCardDrop,
-}: ColumnProps) {
+export function Column({ title, status, color, onCardDrop }: ColumnProps) {
   const [, ref] = useDrop({
     accept: "CARD",
     drop: (item: any) => {
@@ -39,11 +34,11 @@ export function Column({
         <Card
           key={card._id}
           _id={card._id}
-          title={card.title}
-          status={card.status}
-          code={card.code}
-          estimated={card.estimated}
-          dueDate={card.dueDate}
+          // title={card.title}
+          // status={card.status}
+          // code={card.code}
+          // estimated={card.estimated}
+          // dueDate={card.dueDate}
         />
       ))}
     </main>

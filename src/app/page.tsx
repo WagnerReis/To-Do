@@ -5,6 +5,7 @@ import { api, getConfig } from "@/api";
 import { useQuery } from "@tanstack/react-query";
 import { useRouter } from "next/navigation";
 import { useEffect } from "react";
+import { CardsProvider } from "@/context/CardsProvider";
 
 export default function Home() {
   const router = useRouter();
@@ -12,8 +13,7 @@ export default function Home() {
     queryKey: ["auth"],
     queryFn: async () => {
       try {
-        const response = await api
-          .get("/auth/profile", getConfig());
+        const response = await api.get("/auth/profile", getConfig());
         return response;
       } catch {
         router.push("/login");
@@ -30,25 +30,27 @@ export default function Home() {
 
   if (isLoading) {
     return (
-        <main
-          style={{
-            display: "flex",
-            justifyContent: "center",
-            alignItems: "center",
-            height: "100vh",
-          }}
-        >
-          <div className="spinner-border text-primary" role="status">
-            <span className="sr-only">Carregando...</span>
-          </div>
-        </main>
+      <main
+        style={{
+          display: "flex",
+          justifyContent: "center",
+          alignItems: "center",
+          height: "100vh",
+        }}
+      >
+        <div className="spinner-border text-primary" role="status">
+          <span className="sr-only">Carregando...</span>
+        </div>
+      </main>
     );
   }
 
   return (
     <>
       <Header />
-      <Board />
+      <CardsProvider>
+        <Board />
+      </CardsProvider>
     </>
   );
 }
