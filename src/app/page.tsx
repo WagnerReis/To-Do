@@ -17,7 +17,7 @@ export default function Home() {
         return response;
       } catch {
         router.push("/login");
-        throw new Error("Usuário não autenticado");
+        throw new Error("Unauthenticated user");
       }
     },
   });

@@ -13,6 +13,8 @@ interface ColumnProps {
 }
 
 export function Column({ title, status, color, onCardDrop }: ColumnProps) {
+  const { cards } = useCards();
+  
   const [, ref] = useDrop({
     accept: "CARD",
     drop: (item: any) => {
@@ -20,7 +22,6 @@ export function Column({ title, status, color, onCardDrop }: ColumnProps) {
     },
   });
 
-  const { cards } = useCards();
 
   const filteredCards = cards.filter((card) => card.status === status);
 
@@ -34,11 +35,6 @@ export function Column({ title, status, color, onCardDrop }: ColumnProps) {
         <Card
           key={card._id}
           _id={card._id}
-          // title={card.title}
-          // status={card.status}
-          // code={card.code}
-          // estimated={card.estimated}
-          // dueDate={card.dueDate}
         />
       ))}
     </main>

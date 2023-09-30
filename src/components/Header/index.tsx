@@ -1,14 +1,22 @@
 import React from "react";
 import styles from "./styles.module.scss";
-import Link from "next/link";
+import Cookies from "js-cookie";
+import { useRouter } from "next/navigation";
 
 export function Header() {
+  const router = useRouter();
+
+  function handleLogout() {
+    Cookies.remove("user_token");
+    router.push("/login");
+  }
+
   return (
     <header className={styles.header}>
       <div className={styles.title}>My Board</div>
-      <Link href="/login" className={styles.login}>
-        Login
-      </Link>
+      <button onClick={handleLogout} className={styles.logout}>
+        Logout
+      </button>
     </header>
   );
 }

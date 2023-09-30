@@ -47,14 +47,15 @@ export function Card({ _id }: ICard) {
     const { id, value } = event.target;
 
     if (field === "dueDate") {
+      const date = new Date(`${value}T03:00:00Z`)
+      updateDueDate(id, new Date(date));
       setNewDueDate(value)
-      updateDueDate(id, new Date(value));
     } else if (field === "estimated") {
-      setNewEstimated(Number(value))
       updateEstimate(id, Number(value));
+      setNewEstimated(Number(value))
     } else if (field === "status") {
-      setNewStatus(value)
       updateStatus(id, value);
+      setNewStatus(value)
     }
   }
 
@@ -69,7 +70,9 @@ export function Card({ _id }: ICard) {
           name="status"
           id={_id}
           value={newStatus}
-          onChange={(e) => handleFieldChange(e, "status")}
+          onChange={(e) => {
+            handleFieldChange(e, "status")
+          }}
         >
           {createOptions(styles.option)}
         </select>

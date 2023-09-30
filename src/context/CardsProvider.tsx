@@ -41,6 +41,8 @@ export function CardsProvider({ children }: CardsProviderProps ) {
   ) => {
     const dataToUpdate = { status: newStatus };
     await api.patch(`/cards/updateStatus/${cardId}`, dataToUpdate, getConfig());
+    const response = await api.get<CardProps[]>('/cards', getConfig())
+    setCards(response.data)
   };
 
   const updateEstimate = async (

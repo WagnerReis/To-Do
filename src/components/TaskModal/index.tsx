@@ -29,6 +29,11 @@ export function TaskModal({ isOpen, onClose, cards, setCards }: any) {
     });
   };
 
+  function handleCancel() {
+    reset();
+    onClose();
+  }
+
   return (
     <Modal
       isOpen={isOpen}
@@ -104,7 +109,10 @@ export function TaskModal({ isOpen, onClose, cards, setCards }: any) {
               </div>
             </div>
           </div>
-          <input className={styles.button} type="submit" value="Create" />
+          <div className={styles.actions}>
+            <button className={styles.cancel} onClick={handleCancel}>Cancel</button>
+            <input className={styles.create} type="submit" value="Create" />
+          </div>
         </form>
       </div>
     </Modal>

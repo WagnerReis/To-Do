@@ -9,13 +9,14 @@ import { TaskModal } from "../TaskModal";
 import { api, getConfig } from "@/api";
 import { debounce } from "lodash";
 import { useCards } from "@/hooks/useCards";
+import { BiSearch } from "react-icons/bi";
 
 const columns = getColumns();
 
 export function Board() {
   const config = getConfig();
 
-  const { cards, updateCards } = useCards();
+  const { cards, updateCards, updateStatus } = useCards();
   const [modalIsOpen, setModalIsOpen] = useState(false);
 
   const fetchCards = async () => {
@@ -29,13 +30,6 @@ export function Board() {
 
   useEffect(() => {
     fetchCards();
-  }, []);
-
-  useEffect(() => {
-    (async () => {
-      const response = await api.get<CardProps[]>("/cards", config);
-      updateCards(response.data);
-    })();
   }, []);
 
   const openModal = () => {
@@ -60,32 +54,35 @@ export function Board() {
   };
 
   const handleCardDrop = async (cardId: string, targetColumn: string) => {
+    const response = await api.get<CardProps[]>('/cards', config)
+    const cards = response.data
     const cardIndex = cards.findIndex((c) => c._id === cardId);
+    
     if (cardIndex !== -1) {
       const updatedCard = { ...cards[cardIndex], status: targetColumn };
       const updatedCards = [...cards];
       updatedCards[cardIndex] = updatedCard;
-
+      
       updateCards(updatedCards);
-      await api.patch(
-        `/cards/updateStatus/${updatedCards[cardIndex]._id}`,
-        { status: targetColumn },
-        config
-      );
+      updateStatus(cardId, targetColumn);
     }
   };
 
   return (
     <DndProvider backend={HTML5Backend}>
         <section className={styles.container}>
-          <div onClick={openModal} className={styles.plus}>
+          <span onClick={openModal} className={styles.plus}>
             +
-          </div>
+          </span>
+          <div className={styles.searchContainer}>
           <input
             type="text"
-            className={styles.filter}
+            className={styles.searchInput}
+            placeholder="Search"
             onChange={handleFilter}
           />
+            <BiSearch className={styles.searchIcon} />
+          </div>
         </section>
 
         <TaskModal
@@ -102,7 +99,6 @@ export function Board() {
               status={column.status}
               title={column.title}
               color={column.color}
-              // cards={cards}
               onCardDrop={handleCardDrop}
             />
           ))}

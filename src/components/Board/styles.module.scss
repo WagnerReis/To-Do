@@ -6,6 +6,7 @@
   border-radius: 6px;
   margin-top: 2rem;
   padding: 0 1rem;
+  position: relative;
 
   display: flex;
   align-items: center;
@@ -33,7 +34,21 @@
     }
   }
 
-  .filter {
+  .searchContainer {
+    position: relative;
+    display: flex;
+    align-items: center;
+  }
+  
+  .searchIcon {
+    position: absolute;
+    left: 10px;
+    color: gray;
+    font-size: 20px;
+    cursor: pointer;
+  }
+
+  .searchInput {
     width: 500px;
     height: 2.2rem;
     background: rgba(255, 255, 255, 0.8);
@@ -41,7 +56,7 @@
     border-radius: 6px;
     color: #000000;
     font-size: 1.2rem;
-    padding-left: 1rem;
+    padding-left: 2.2rem;
 
     &:focus {
       outline: 1px solid rgba(0, 0, 0, 0.3);
