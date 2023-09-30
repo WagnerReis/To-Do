@@ -1,18 +1,17 @@
 .estimated {
   margin-left: 5rem;
-}
 
-.formGroupThree {
-  display: flex;
-  align-items: center;
-  gap: 2rem;
-  margin-bottom: 20px;
-
-  input {
-    width: 4rem;
+  .formGroupThree {
+    display: flex;
+    align-items: center;
+    gap: 2rem;
+    margin-bottom: 20px;
+  
+    input {
+      width: 4rem;
+    }
   }
 }
-
 
 .modalContent {
   text-align: left;
