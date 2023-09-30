@@ -7,8 +7,9 @@ import { useCards } from "@/hooks/useCards";
 export interface CardProps {
   _id: string;
   title: string;
+  description: string;
   status: string;
-  code: string;
+  code?: string;
   estimated: number;
   dueDate: Date;
 }
@@ -17,9 +18,10 @@ interface ICard {
   _id: string;
 }
 
-const cardDefault = {
+export const cardDefault = {
   _id: "",
   title: "",
+  description: "",
   status: "",
   code: "",
   estimated: 0,
