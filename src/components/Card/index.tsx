@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import styles from "./styles.module.scss";
 import { useDrag } from "react-dnd";
 import { formatedDueDate } from "@/utils/formatedDueDate";
-import { api, getConfig } from "@/api";
+import { useCards } from "../Board";
 
 export interface CardProps {
   _id: string;
@@ -13,17 +13,23 @@ export interface CardProps {
   dueDate: Date;
 }
 
-export function Card({
-  _id,
-  title,
-  status,
-  code,
-  estimated,
-  dueDate,
-}: CardProps) {
-  const [newDueDate, setDueDate] = useState(formatedDueDate(dueDate));
-  const [newEstimate, setEstimate] = useState(estimated);
-  const [selectedOption, setSelectedOption] = useState(status);
+const cardDefault = {
+  _id: "",
+  title: "",
+  status: "",
+  code: "",
+  estimated: 0,
+  dueDate: new Date(),
+}
+
+export function Card({ _id }: CardProps) {
+  const { cards, updateDueDate, updateEstimate, updateStatus } = useCards();
+  const card: CardProps = cards.find((c: CardProps) => c._id === _id) || cardDefault
+
+  const { dueDate, estimated, status, code, title } = card;
+  const [newEstimated, setNewEstimated] = useState(estimated)
+  const [newDueDate, setNewDueDate] = useState(formatedDueDate(dueDate))
+  const [newStatus, setNewStatus] = useState(status)
 
   const [, ref] = useDrag({
     type: "CARD",
@@ -37,16 +43,16 @@ export function Card({
     const { id, value } = event.target;
 
     if (field === "dueDate") {
-      setDueDate(value);
+      setNewDueDate(value)
+      updateDueDate(id, new Date(value));
     } else if (field === "estimated") {
-      setEstimate(Number(value));
+      setNewEstimated(Number(value))
+      updateEstimate(id, Number(value));
     } else if (field === "status") {
-      setSelectedOption(value);
+      setNewStatus(value)
+      updateStatus(id, value);
     }
-
-    const dataToUpdate = { [field]: value };
-    api.patch(`/cards/update${field}/${id}`, dataToUpdate, getConfig());
-  };
+  }
 
   return (
     <main ref={ref} className={styles.container}>
@@ -58,7 +64,7 @@ export function Card({
           className={styles.select}
           name="status"
           id={_id}
-          value={selectedOption}
+          value={newStatus}
           onChange={(e) => handleFieldChange(e, "status")}
         >
           {createOptions(styles.option)}
@@ -70,7 +76,7 @@ export function Card({
             type="text"
             name="effort"
             id={_id}
-            value={newEstimate}
+            value={newEstimated === 0 ? "" : newEstimated}
             onChange={(e) => handleFieldChange(e, "estimated")}
           />
         </div>

@@ -1,14 +1,14 @@
 "use client";
 import React from "react";
 import styles from "./styles.module.scss";
-import { Card, CardProps } from "../Card";
+import { Card } from "../Card";
 import { useDrop } from "react-dnd";
+import { useCards } from "../Board";
 
 interface ColumnProps {
   title: string;
   color: string;
   status: string;
-  cards: CardProps[];
   onCardDrop: any;
 }
 
@@ -16,7 +16,6 @@ export function Column({
   title,
   status,
   color,
-  cards,
   onCardDrop,
 }: ColumnProps) {
   const [, ref] = useDrop({
@@ -25,6 +24,8 @@ export function Column({
       onCardDrop(item.id, status);
     },
   });
+
+  const { cards } = useCards();
 
   const filteredCards = cards.filter((card) => card.status === status);
 
