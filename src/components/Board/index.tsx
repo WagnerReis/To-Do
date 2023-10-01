@@ -88,8 +88,8 @@ export function Board() {
         <TaskModal
           isOpen={modalIsOpen}
           onClose={closeModal}
-          cards={cards}
-          setCards={updateCards}
+          // cards={cards}
+          type="create"
         />
 
         <main className={styles.board}>

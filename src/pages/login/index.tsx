@@ -1,13 +1,14 @@
-import React, { ChangeEvent, useState } from "react";
+import React, { useState } from "react";
 import styles from "./styles.module.scss";
 import "../../app/globals.scss";
 import Image from "next/image";
 import Link from "next/link";
 import { useRouter } from "next/router";
 import Cookies from "js-cookie";
+import { useForm, SubmitHandler } from "react-hook-form";
 
 import logo from "../../../public/assets/icon.png";
-import { api, getConfig } from "@/api";
+import { api } from "@/api";
 
 interface IResponse {
   data: {
@@ -22,21 +23,21 @@ interface IResponseProfile {
   };
 }
 
+type Inputs = {
+  email: string;
+  password: string;
+};
+
 export default function Login() {
   const router = useRouter();
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
+  const {
+    register,
+    handleSubmit,
+    formState: { errors },
+  } = useForm<Inputs>();
   const [errorLogin, setErrorLogin] = useState(false);
 
-  const handleEmail = (event: ChangeEvent<HTMLInputElement>) => {
-    setEmail(event.target.value);
-  };
-
-  const handlePassword = (event: ChangeEvent<HTMLInputElement>) => {
-    setPassword(event.target.value);
-  };
-
-  const handleLogin = async () => {
+  const onSubmit: SubmitHandler<Inputs>  = async ({ email, password}: Inputs) => {
     const payload = {
       email,
       password,
@@ -66,30 +67,30 @@ export default function Login() {
           quality={100}
         />
 
-        <input
-          className={styles.email}
-          type="text"
-          placeholder="Email"
-          onChange={handleEmail}
-        />
-        <input
-          className={styles.password}
-          type="password"
-          placeholder="Password"
-          onChange={handlePassword}
-        />
+        <form onSubmit={handleSubmit(onSubmit)}>
+          <input
+            className={styles.email}
+            type="text"
+            placeholder="Email"
+            {...register("email", { required: true })}
+          />
+          {errors.email && <span className={styles.warning}>This field is required</span>}
+          <input
+            className={styles.password}
+            type="password"
+            placeholder="Password"
+            {...register("password", { required: true })}
+            />
+            {errors.password && <span className={styles.warning}>This field is required</span>}
 
-        <div className={styles.buttons}>
-          <Link className={styles.forgotPassword} href="/">
-            Forgot password?
-          </Link>
-          {errorLogin && (
-            <p style={{ color: "red" }}>Email or password invalid</p>
-          )}
-          <button className={styles.login} onClick={handleLogin}>
-            Login
-          </button>
-        </div>
+          <div className={styles.buttons}>
+            {errorLogin && (
+              <p style={{ color: "red" }}>Email or password invalid</p>
+            )}
+            <input className={styles.login} type="submit" defaultValue="Login"/>
+          </div>
+        </form>
+        <Link className={styles.account} href="/account">Create account</Link>
       </div>
     </main>
   );
