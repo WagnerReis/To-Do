@@ -1,4 +1,4 @@
-import React, { ChangeEvent, useEffect, useState } from "react";
+import React, { ChangeEvent, useCallback, useEffect, useState } from "react";
 import styles from "./styles.module.scss";
 import { Column } from "../Column";
 import { CardProps } from "../Card";
@@ -19,18 +19,18 @@ export function Board() {
   const { cards, updateCards, updateStatus } = useCards();
   const [modalIsOpen, setModalIsOpen] = useState(false);
 
-  const fetchCards = async () => {
+  const fetchCards = useCallback(async () => {
     try {
       const response = await api.get<CardProps[]>("/cards", config);
       updateCards(response.data);
     } catch (error) {
       console.error("Erro ao buscar cartões:", error);
     }
-  };
+  }, []);
 
   useEffect(() => {
     fetchCards();
-  }, []);
+  }, [fetchCards]);
 
   const openModal = () => {
     setModalIsOpen(true);
@@ -54,8 +54,8 @@ export function Board() {
   };
 
   const handleCardDrop = async (cardId: string, targetColumn: string) => {
-    const response = await api.get<CardProps[]>("/cards", config);
-    const cards = response.data;
+    // const response = await api.get<CardProps[]>("/cards", config);
+    // const cards = response.data;
     const cardIndex = cards.findIndex((c) => c._id === cardId);
 
     if (cardIndex !== -1) {

@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { IoMdClose } from "react-icons/io";
 import Modal from "react-modal";
 import styles from "./styles.module.scss";
@@ -6,6 +6,7 @@ import { useForm, SubmitHandler } from "react-hook-form";
 import { api, getConfig } from "@/api";
 import { useCards } from "@/hooks/useCards";
 import { CardProps, cardDefault } from "../Card";
+import { formatedDueDate } from "@/utils/formatedDueDate";
 
 type Inputs = {
   user_id: string | undefined;
@@ -30,6 +31,7 @@ export function TaskModal({ isOpen, onClose, cardId, type }: any) {
   const onSubmit: SubmitHandler<Inputs> = async (data) => {
     const config = getConfig()
     data.status = "new";
+    data.dueDate = new Date(`${data.dueDate}T03:00:00Z`),
     
     data.user_id = config.params.user_id
     api.post("/cards", data, config).then((response) => {
@@ -45,7 +47,7 @@ export function TaskModal({ isOpen, onClose, cardId, type }: any) {
       title: data.title,
       description: data.description,
       estimated: data.estimated,
-      dueDate: data.dueDate,
+      dueDate: new Date(`${data.dueDate}T03:00:00Z`),
       status: data.status,
     };
     updateCompleteCard(card._id, valueToUpdate);
@@ -134,7 +136,7 @@ export function TaskModal({ isOpen, onClose, cardId, type }: any) {
                     className={styles.inputDate}
                     type="date"
                     id="due-date"
-                    defaultValue={card ? String(card.dueDate) : ""}
+                    defaultValue={card ? formatedDueDate(card.dueDate) : ""}
                     {...register("dueDate")}
                   />
                 </div>

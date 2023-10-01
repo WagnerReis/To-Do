@@ -3,6 +3,7 @@ import styles from "./styles.module.scss";
 import { useDrag } from "react-dnd";
 import { formatedDueDate } from "@/utils/formatedDueDate";
 import { useCards } from "@/hooks/useCards";
+import { TaskModal } from "../TaskModal";
 
 export interface CardProps {
   _id: string;
@@ -26,16 +27,26 @@ export const cardDefault = {
   code: "",
   estimated: 0,
   dueDate: new Date(),
-}
+};
 
 export function Card({ _id }: ICard) {
   const { cards, updateDueDate, updateEstimate, updateStatus } = useCards();
-  const card: CardProps = cards.find((c: CardProps) => c._id === _id) || cardDefault
+  const card: CardProps =
+    cards.find((c: CardProps) => c._id === _id) || cardDefault;
 
   const { dueDate, estimated, status, code, title } = card;
-  const [newEstimated, setNewEstimated] = useState(estimated)
-  const [newDueDate, setNewDueDate] = useState(formatedDueDate(dueDate))
-  const [newStatus, setNewStatus] = useState(status)
+  const [newEstimated, setNewEstimated] = useState(estimated);
+  const [newDueDate, setNewDueDate] = useState(formatedDueDate(dueDate));
+  const [newStatus, setNewStatus] = useState(status);
+  const [isModalOpen, setIsModalOpen] = useState(false);
+
+  const openModal = () => {
+    setIsModalOpen(true);
+  };
+
+  const closeModal = () => {
+    setIsModalOpen(false);
+  };
 
   const [, ref] = useDrag({
     type: "CARD",
@@ -49,23 +60,31 @@ export function Card({ _id }: ICard) {
     const { id, value } = event.target;
 
     if (field === "dueDate") {
-      const date = new Date(`${value}T03:00:00Z`)
+      const date = new Date(`${value}T03:00:00Z`);
       updateDueDate(id, new Date(date));
-      setNewDueDate(value)
+      setNewDueDate(value);
     } else if (field === "estimated") {
       updateEstimate(id, Number(value));
-      setNewEstimated(Number(value))
+      setNewEstimated(Number(value));
     } else if (field === "status") {
       updateStatus(id, value);
-      setNewStatus(value)
+      setNewStatus(value);
     }
-  }
+  };
 
   return (
     <main ref={ref} className={styles.container}>
-      <div className={styles.title}>
+      <div className={styles.title} onClick={openModal}>
         {code}: {title}
       </div>
+      {isModalOpen && (
+          <TaskModal
+            isOpen={isModalOpen}
+            onClose={closeModal}
+            cardId={_id}
+            type="edit"
+          />
+      )}
       <div className={styles.statusEstimate}>
         <select
           className={styles.select}
@@ -73,7 +92,7 @@ export function Card({ _id }: ICard) {
           id={_id}
           value={newStatus}
           onChange={(e) => {
-            handleFieldChange(e, "status")
+            handleFieldChange(e, "status");
           }}
         >
           {createOptions(styles.option)}
