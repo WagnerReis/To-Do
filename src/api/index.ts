@@ -7,7 +7,11 @@ export const api = axios.create({
 
 export const getConfig = () => {
   const token = Cookies.get("user_token");
+  const userId = Cookies.get("user_id");
   const config = {
+    params: {
+      user_id: userId,
+    },
     headers: {
       Authorization: `Bearer ${token}`,
     },

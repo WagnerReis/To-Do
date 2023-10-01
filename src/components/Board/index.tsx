@@ -40,7 +40,7 @@ export function Board() {
     setModalIsOpen(false);
   };
 
-  const debouncedSearch = debounce((searchTerm: string) => {
+  const debouncedSearch = debounce( async (searchTerm: string) => {
     api
       .get<CardProps[]>(`/cards?title=${searchTerm}`, config)
       .then((response) => {
@@ -54,15 +54,15 @@ export function Board() {
   };
 
   const handleCardDrop = async (cardId: string, targetColumn: string) => {
-    const response = await api.get<CardProps[]>('/cards', config)
-    const cards = response.data
+    const response = await api.get<CardProps[]>("/cards", config);
+    const cards = response.data;
     const cardIndex = cards.findIndex((c) => c._id === cardId);
-    
+
     if (cardIndex !== -1) {
       const updatedCard = { ...cards[cardIndex], status: targetColumn };
       const updatedCards = [...cards];
       updatedCards[cardIndex] = updatedCard;
-      
+
       updateCards(updatedCards);
       updateStatus(cardId, targetColumn);
     }
@@ -70,39 +70,39 @@ export function Board() {
 
   return (
     <DndProvider backend={HTML5Backend}>
-        <section className={styles.container}>
-          <span onClick={openModal} className={styles.plus}>
-            +
-          </span>
-          <div className={styles.searchContainer}>
+      <section className={styles.container}>
+        <span onClick={openModal} className={styles.plus}>
+          +
+        </span>
+        <div className={styles.searchContainer}>
           <input
             type="text"
             className={styles.searchInput}
             placeholder="Search"
             onChange={handleFilter}
           />
-            <BiSearch className={styles.searchIcon} />
-          </div>
-        </section>
+          <BiSearch className={styles.searchIcon} />
+        </div>
+      </section>
 
-        <TaskModal
-          isOpen={modalIsOpen}
-          onClose={closeModal}
-          // cards={cards}
-          type="create"
-        />
+      <TaskModal
+        isOpen={modalIsOpen}
+        onClose={closeModal}
+        // cards={cards}
+        type="create"
+      />
 
-        <main className={styles.board}>
-          {columns.map((column) => (
-            <Column
-              key={column.id}
-              status={column.status}
-              title={column.title}
-              color={column.color}
-              onCardDrop={handleCardDrop}
-            />
-          ))}
-        </main>
+      <main className={styles.board}>
+        {columns.map((column) => (
+          <Column
+            key={column.id}
+            status={column.status}
+            title={column.title}
+            color={column.color}
+            onCardDrop={handleCardDrop}
+          />
+        ))}
+      </main>
     </DndProvider>
   );
 }

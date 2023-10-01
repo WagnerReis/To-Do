@@ -8,6 +8,7 @@ import { useCards } from "@/hooks/useCards";
 import { CardProps, cardDefault } from "../Card";
 
 type Inputs = {
+  user_id: string | undefined;
   title: string;
   description: string;
   estimated: number;
@@ -25,11 +26,13 @@ export function TaskModal({ isOpen, onClose, cardId, type }: any) {
 
   const { cards, updateCards, updateCompleteCard } = useCards();
   const card = cards.find((c: CardProps) => c._id === cardId) ?? cardDefault
-  console.log(card, cardId)
 
-  const onSubmit: SubmitHandler<Inputs> = (data) => {
+  const onSubmit: SubmitHandler<Inputs> = async (data) => {
+    const config = getConfig()
     data.status = "new";
-    api.post("/cards", data, getConfig()).then((response) => {
+    
+    data.user_id = config.params.user_id
+    api.post("/cards", data, config).then((response) => {
       updateCards([...cards, response.data]);
       onClose();
       reset();
